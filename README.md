@@ -4,7 +4,7 @@ Share and an API for Annotator Plugin
 
 share-annotator.js is a plugin for Annotator. This project has two objectives. On the one hand, to share with social networks (Google, Facebook, Twitter, email...). On the other hand, the annotations API to create a URL that open automatically the annotation, no matter if the annotation is not in the database.
 
-The share plugin allow you to share text annotations and video annotations with Open Video Annotator. The code is written in javascript/jquery, but you can traslate to coffee using [js2coffee](http://js2coffee.org/), the language used in Annotator.
+The share plugin allow you to share text annotations and video annotations with Open Video Annotator. The code is written in javascript/jquery, but you can translate to coffee using [js2coffee](http://js2coffee.org/), the language used in Annotator.
 
 This plugin will be used in [Open Video Annotation tool](http://www.openvideoannotation.org/). 
 A project supported by [Center for Hellenic Studies](http://chs.harvard.edu/), at [Harvard University](http://www.harvard.edu/) and the [Becas Talentia](http://www.juntadeandalucia.es/economiainnovacionyciencia/talentia/) program from the Junta de Andalucia, Spain.
@@ -37,7 +37,7 @@ videojs:
 	</head>
 ```
 
-Futhermore, you will need to create an instance of Annotator with the plugin, as follow:
+Furthermore, you will need to create an instance of Annotator with the plugin, as follow:
 
 ```js
 	<script>

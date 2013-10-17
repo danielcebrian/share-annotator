@@ -214,8 +214,13 @@ Annotator.Plugin.Share = (function(_super) {
 			.subscribe("annotationsLoaded", function (annotations){
 				console.log("runningAPI");
 				var wrapper = $('.annotator-wrapper').parent()[0],
-					annotator = window.annotator = $.data(wrapper, 'annotator'),
-					mplayer = annotator.mplayer;
+					mplayer;
+					
+				//Set Annotator in wrapper to fix quick DOM
+				$.data(wrapper, 'annotator', self.annotator);//Set the object in the span
+				annotator = window.annotator = $.data(wrapper, 'annotator');
+				mplayer = typeof annotator.mplayer!='undefined'?annotator.mplayer:[];
+				
 				//Detect if the URL has an API element
 				if (typeof API!='undefined' && typeof API.method!='undefined' && (API.method=='1'||API.method=='2')) {
 					if(API.method=='1'){
