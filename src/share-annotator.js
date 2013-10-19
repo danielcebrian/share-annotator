@@ -231,8 +231,8 @@ Annotator.Plugin.Share = (function(_super) {
 							var an = allannotations[item];
 							if (typeof an.id!='undefined' && an.id == ovaId){//this is the annotation
 								if(self._isVideo(an)){//It is a video
-									for (var index in mplayer){
-										var player = mplayer[index];
+									if (typeof mplayer[an.target.container]!='undefined'){
+										var player = mplayer[an.target.container];
 										if (player.id_ == an.target.container){
 											var anFound = an;
 											videojs(player.id_).ready(function(){
