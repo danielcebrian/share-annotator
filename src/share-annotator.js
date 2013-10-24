@@ -199,14 +199,13 @@ Annotator.Plugin.Share = (function(_super) {
 			var annotator = this.annotator,
 				editor = annotator.editor,
 				textarea = $(editor.element).find('textarea')[0];
-			
 			if(source == 'ovaText')
 				source = textarea.value;
 			if (typeof editor.VideoJS!='undefined' && editor.VideoJS !== -1){//Video Annotation
 				if(source == 'ovaContainer')
 					source = editor.VideoJS;
 				else if(source == 'ovaSrc')
-					source = annotator.mplayer[editor.VideoJS].tag.currentSrc;
+					source = annotator.mplayer[editor.VideoJS].tech.options_.source.src;
 				else if(source == 'ovaStart')
 					source = annotator.mplayer[editor.VideoJS].rangeslider.getValues().start;
 				else if(source == 'ovaEnd')
@@ -244,6 +243,20 @@ Annotator.Plugin.Share = (function(_super) {
 			user = this.getParameterByName('ovaUser'),//Method 2 
 			startOffset = this.getParameterByName('ovastartOffset'),//Method 2 
 			endOffset = this.getParameterByName('ovaendOffset');//Method 2 
+		
+		//remove the variables from the url browser
+		var stripped_url = top.location.href;
+		if (ovaId != '') stripped_url = this.removeVariableFromURL(stripped_url, 'ovaId');
+		if (start != '') stripped_url = this.removeVariableFromURL(stripped_url, 'ovaStart');
+		if (end != '') stripped_url = this.removeVariableFromURL(stripped_url, 'ovaEnd');
+		if (container != '') stripped_url = this.removeVariableFromURL(stripped_url, 'ovaContainer');
+		if (src != '') stripped_url = this.removeVariableFromURL(stripped_url, 'ovaSrc');
+		if (text != '') stripped_url = this.removeVariableFromURL(stripped_url, 'ovaText');
+		if (user != '') stripped_url = this.removeVariableFromURL(stripped_url, 'ovaUser');
+		if (startOffset != '') stripped_url = this.removeVariableFromURL(stripped_url, 'ovastartOffset');
+		if (endOffset != '') stripped_url = this.removeVariableFromURL(stripped_url, 'ovaendOffset');
+  		window.history.pushState("object or string", "Title", stripped_url);
+  		
 		
 		// Method 1 API with the Id of the annotation
 		//Example: http://danielcebrian.com/annotations/demo.html?&ovaId=wtva_SjnQb2HtqppDihKug
@@ -328,7 +341,7 @@ Annotator.Plugin.Share = (function(_super) {
 								//Compare without extension
 								var src = decodeURIComponent(API.src),
 									targetSrc = src.substring(0,src.lastIndexOf(".")),
-									playerSrc = player.tag.src==''?player.tag.currentSrc:player.tag.src;
+									playerSrc = player.tech.options_.source.src==''?player.tag.currentSrc:player.tech.options_.source.src;
 								playerSrc = playerSrc.substring(0,playerSrc.lastIndexOf("."))
 								isSource = (targetSrc == playerSrc);
 							}
@@ -351,9 +364,11 @@ Annotator.Plugin.Share = (function(_super) {
 										user:decodeURIComponent(API.user)
 									};
 								videojs(player.id_).ready(function(){
-									player.preload('auto');
-									player.play();
+									if (player.techName != 'Youtube'){
+										player.preload('auto');
+									}
 									player.autoPlayAPI = annotation;
+									player.play();
 								});
 							}
 						}
@@ -411,6 +426,17 @@ Annotator.Plugin.Share = (function(_super) {
         	results = regex.exec('?'+window.location.href.split('?')[1]);
 		return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 	};
+	
+	Share.prototype.removeVariableFromURL = function(url_string, variable_name) {
+		var URL = String(url_string);
+		var regex = new RegExp( "\\?" + variable_name + "=[^&]*&?", "gi");
+		URL = URL.replace(regex,'?');
+		regex = new RegExp( "\\&" + variable_name + "=[^&]*&?", "gi");
+		URL = URL.replace(regex,'&');
+		URL = URL.replace(/(\?|&)$/,'');
+		regex = null;
+		return URL;
+	}
 
 	Share.prototype.updateViewer = function(field, annotation) {
 		this.annotation = annotation;
