@@ -47,6 +47,36 @@ Furthermore, you will need to create an instance of Annotator with the plugin, a
 
 Change #div_id for the real id where the Annotator is.
 
+##Options
+
+It is possible to add new social networks and sort in the display using the options. The two parameters in the options are:
+
+ - shareIn: This is an array with the social networks sorted (by default: ['facebook','twitter','email','google'])
+ - getUrl: This is an important parameter, because with this you could add your own social network. In order to use this, you will need to create a function with three inlet parameters (title, link, noteText). 
+
+ * Title is the static text by default ("Sharing a annotation with Open Video Annotation")
+ * Link is the url that you will share
+ * noteText is the text that you have added in your annotation
+
+As example you can see by default the next social network functions:
+```json
+ {
+	'facebook':function(title,link,noteText){
+		return 'https://www.facebook.com/sharer/sharer.php?s=100&p[url]='+link+'&p[title]='+encodeURIComponent('Open Video Annotation')+'&p[summary]='+noteText;
+	},
+	'twitter':function(title,link,noteText){
+		return 'https://twitter.com/intent/tweet?original_referer='+link+'&source=tweetbutton&url='+link+ "&via=OpenVideoAnnotation&text=" +encodeURIComponent('I want to share the next Open Video Annotation: ');
+	},
+	'google':function(title,link,noteText){
+		return 'https://plus.google.com/share?url='+link;
+	},
+	'email': function(title,link,noteText){
+		return 'mailto:?subject='+title+'&body='+link;
+	}
+}
+```
+
+
 ##Ways to share
 
 There is two way to share an annotation. 
@@ -63,6 +93,3 @@ For Video Annotation is necessary in addition:
  - ovaSrc with the source url of the video to be loaded
 
 
-##To-do
-
-In the next version you can select the social network through options and add more using plugin options.

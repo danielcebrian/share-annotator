@@ -2,7 +2,6 @@
 .share-container-annotator{
 	display: block;
 	min-width: 100%;
-	height: 3em;
 	border: none;
 	margin: 0;
 	color: rgb(60, 60, 60);
@@ -14,6 +13,7 @@
 	resize: none;
 	padding-left: 0.6em;
 	padding-right: 1em;
+	height: 3.1em;
 }
 
 .share-container-annotator .share-text-annotator{
@@ -21,14 +21,19 @@
 	padding-top: 1em;
 }
 
+.annotator-editor .share-container-annotator .share-text-annotator{
+	height: 2.1em;
+}
+
 .share-container-annotator .share-button{
 	top: 0.3em;
-	float:right;
 	outline: 0;
+	float:left;
 	position: relative;
 	text-align: center;
 	margin: 0;
 	padding: 0;
+	margin-left:0.3em;
 	height: 2.5em;
 	width: 2.5em;
 	background-repeat: no-repeat;
@@ -40,19 +45,137 @@
 	cursor: pointer;
 }
 
+/* Popup */
+
+.share-container-annotator .share-popup-overlay-bg{
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	height:100%;
+	width: 100%;
+	cursor: pointer;
+	background: #000; /* fallback */
+	background: rgba(0,0,0,0.75);
+	padding: 0;
+}
+.share-container-annotator .share-popup-overlay-bg .share-popup{
+	background: #fff;
+	padding: 1%;
+	width: 30%;
+	position: relative;
+	top: 15%;
+	left: 50%;
+	margin: 0 0 0 -17%; /* add negative left margin for half the width to center the div */
+	cursor: default;
+	border-radius: 4px;
+	box-shadow: 0 0 5px rgba(0,0,0,0.9);
+}
+.share-container-annotator .share-popup-overlay-bg .share-popup-copy,
+.share-container-annotator .share-popup-overlay-bg .share-popup-title{
+	font-style: normal;
+	font-weight: bold;
+	font-size: 21px;
+	padding-top: 0px;
+	padding-bottom: 20px;
+	color: #222;
+}
+.share-container-annotator .share-popup-overlay-bg .share-popup-uri{
+	width:100%;
+	border: 1px solid rgb(144, 144, 144);
+	height: 24px;
+	margin-bottom: 10px;
+}
+.share-container-annotator .share-popup-overlay-bg .share-popup-copy{
+	font-size: 15px;
+	float: left;
+	width: 100%;
+	padding:0;
+	margin: 1.0em 0em 0.5em 0em;
+}
+.share-container-annotator .share-popup-overlay-bg .share-popup .share-button{
+	width:49%;
+	padding: 1%;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-o-box-sizing: border-box;
+	box-sizing: border-box;
+	
+	
+	width: 50%;
+	padding: 0;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-o-box-sizing: border-box;
+	box-sizing: border-box;
+	border: 1px solid;
+	margin: 0;
+	text-align: center;
+	alignment-baseline: central;
+	padding-top: 1%;
+	background-position: 0.5em;
+	height: 4em;
+	padding-top: 1.3em;
+}
+/* Close button */
+.share-container-annotator .share-popup-overlay-bg .close-btn {
+	cursor: pointer;
+	position: relative;
+	display: inline-block;
+	padding: 0 12px 0 12px;
+	color: rgb(54, 54, 54);
+	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.75);
+	text-decoration: none;
+	line-height: 24px;
+	font-size: 12px;
+	font-weight: bold;
+	border: 1px solid rgb(162, 162, 162);
+	background-color: rgb(212, 212, 212);
+	background-image: -webkit-gradient( linear, left top, left bottom, from(rgb(245, 245, 245)), color-stop(0.5, rgb(210, 210, 210)), color-stop(0.5, rgb(190, 190, 190)), to(rgb(210, 210, 210)) );
+	background-image: -moz-linear-gradient( to bottom, rgb(245, 245, 245), rgb(210, 210, 210) 50%, rgb(190, 190, 190) 50%, rgb(210, 210, 210) );
+	background-image: -webkit-linear-gradient( to bottom, rgb(245, 245, 245), rgb(210, 210, 210) 50%, rgb(190, 190, 190) 50%, rgb(210, 210, 210) );
+	background-image: linear-gradient( to bottom, rgb(245, 245, 245), rgb(210, 210, 210) 50%, rgb(190, 190, 190) 50%, rgb(210, 210, 210) );
+	-webkit-box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.2), inset 0 0 1px rgba(255, 255, 255, 0.8);
+	-moz-box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.2), inset 0 0 1px rgba(255, 255, 255, 0.8);
+	-o-box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.2), inset 0 0 1px rgba(255, 255, 255, 0.8);
+	box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.2), inset 0 0 1px rgba(255, 255, 255, 0.8);
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	-o-border-radius: 5px;
+	border-radius: 5px;
+}
+
+.share-container-annotator .share-popup-overlay-bg .close-btn:hover {
+    outline: none;
+	border-color: rgb(67, 90, 160);
+	background-color: rgb(56, 101, 249);
+	background-image: -webkit-gradient( linear, left top, left bottom, from(rgb(118, 145, 251)), color-stop(0.5, rgb(80, 117, 251)), color-stop(0.5, rgb(56, 101, 249)), to(rgb(54, 101, 250)) );
+	background-image: -moz-linear-gradient( to bottom, rgb(118, 145, 251), rgb(80, 117, 251) 50%, rgb(56, 101, 249) 50%, rgb(54, 101, 250) );
+	background-image: -webkit-linear-gradient( to bottom, rgb(118, 145, 251), rgb(80, 117, 251) 50%, rgb(56, 101, 249) 50%, rgb(54, 101, 250) );
+	background-image: linear-gradient( to bottom, rgb(118, 145, 251), rgb(80, 117, 251) 50%, rgb(56, 101, 249) 50%, rgb(54, 101, 250) );
+	color: rgb(255, 255, 255);
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.42);
+}
+
+.share-container-annotator .share-popup-overlay-bg .close-btn:active {
+	border-color: rgb(112, 12, 73);
+	background-color: rgb(209, 46, 142);
+	background-image: -webkit-gradient( linear, left top, left bottom, from(rgb(252, 124, 202)), color-stop(0.5, rgb(232, 93, 178)), color-stop(0.5, rgb(209, 46, 142)), to(rgb(255, 0, 156)) );
+	background-image: -moz-linear-gradient( to bottom, rgb(252, 124, 202), rgb(232, 93, 178) 50%, rgb(209, 46, 142) 50%, rgb(255, 0, 156) );
+	background-image: -webkit-linear-gradient( to bottom, rgb(252, 124, 202), rgb(232, 93, 178) 50%, rgb(209, 46, 142) 50%, rgb(255, 0, 156) );
+	background-image: linear-gradient( to bottom, rgb(252, 124, 202), rgb(232, 93, 178) 50%, rgb(209, 46, 142) 50%, rgb(255, 0, 156) );
+}
+
 
 
 /* Viewer */
-.annotator-viewer .share-viewer-annotator div{
+.annotator-viewer .share-viewer-annotator div.share-text-annotator,
+.annotator-viewer .share-viewer-annotator div.share-button{
 	border-top: 0;
 	padding: 0;
 	background-size: 2em;
-	height: 2em;
-	width: 2em;
 	margin-top: -0.2em;
-}
-.annotator-viewer .share-viewer-annotator div.share-text-annotator{
-	padding-top: 0.8em;
+	top: -0.5em;
 	font-style: normal;
 }
 
@@ -76,6 +199,10 @@
 
 .share-container-annotator .share-email-annotator {
 	background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAMAAABg3Am1AAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAABIUExURf///7KysrKyss/Pz9DQ0NHR0dLS0u7u7vDw8PHx8fLy8vPz8/T09PX19fb29vf39/j4+Pn5+fr6+vv7+/z8/P39/f7+/v///37mbPQAAAACdFJOUwCWb//7SQAAAQNJREFUSMft1M2SgyAQRtHkC0RtbP6V93/TWZikFDuQ2c7krrCKU1gKXC7f/lNX9LvuAVB6AUdw78y/V2CEXltpjEcwmabQMNMR0GwbQsPOVAF2AXqR0wiOK2DYh/RGaKTg2VTA+pgXUWgsOXorghUq1ymsDVBOQqE0QYFK+xRKBxyFQumCvVAoH4ACFbe2+f0VnkKhfLICnmsoPJ46X2l7q1u4PUYdgNdxeY2aQDp4b/40+5AyxM2NLGw+YhcisrhbM+J5e9NsPWLKUinCnw7QZBg+hCgVggfXR3QksHVezlkGVZfAADIzs5Ving1hqO6lYZyIjBzRNA7He+nXV+W3v98P7gg+L5LCf08AAAAASUVORK5CYII=');
+}
+
+.share-container-annotator .share-button-annotator {
+	background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC8AAAAvCAMAAABE+WOeAAAAA3NCSVQICAjb4U/gAAAATlBMVEXMzMzZ2dn////r6+vPz8/n5+f5+fnl5eXT09P19fXz8/Pg4ODX19f7+/vR0dHp6enu7u7d3d339/fj4+PV1dX////b29vt7e3h4eHx8fHJkyUPAAAAGnRSTlP//wD//////////////////////////////zDtagYAAAAJcEhZcwAACxIAAAsSAdLdfvwAAAAedEVYdFNvZnR3YXJlAEFkb2JlIEZpcmV3b3JrcyBDUzUuMasfSOsAAAAVdEVYdENyZWF0aW9uIFRpbWUAOC8xNi8xM7KZeroAAAFnSURBVEiJrZaNbsMgDIS9jpCQ0dBoVaW9/4vOQHD4OVIh9aRKLf0UG9scoduYqF7Qs1UUpeys3/Buo1Kbu+BnQpo7/KogznmtiMcPr0MIv1/gRHvNLy0zcXH0dPxYSh483cR/TBmBerlPKYMUYT75FWQsndJpZRUeFTIr4SGVeFjJlg8ZUb5wnU94Bn8cwr/u9X5ZLvD1iHn9SjYmW908r1t6+eM0bNGvlCSB3e4MfqOovGO62XqRO6U702SZl+LH+E9uiwHTFKSYT9+NbNH1DgJXVHiZl/urS+c86s8VD/r/UX40H9mvgZ06+VQ8qWfXV2L9pb+xX767TcuTLJifn/44hPlp9mdNMfS5NJz/p/HzCcZ5652vBzwux/kCDVKnYeYRLvxBjm+2veQPyH/AeIj/IH8D/OlvIKN2nDL/BP7c2G3hz8D/Kzuv/B9FyPvV3C/D99fw/dgN0bt/vcbud6+x94e3+gd13Qxqz2VnfwAAAABJRU5ErkJggg==');
 }
 
 

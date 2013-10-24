@@ -6,8 +6,30 @@ var _ref,
 
 Annotator.Plugin.Share = (function(_super) {
 	__extends(Share, _super);
+	
+	//Default Share configuration
+	Share.prototype.options = {
+		shareIn:['facebook','twitter','email','google'],
+		getUrl:{
+			'facebook':function(title,link,noteText){
+				return 'https://www.facebook.com/sharer/sharer.php?s=100&p[url]='+link+'&p[title]='+encodeURIComponent('Open Video Annotation')+'&p[summary]='+noteText;
+			},
+			'twitter':function(title,link,noteText){
+				return 'https://twitter.com/intent/tweet?original_referer='+link+'&source=tweetbutton&url='+link+ "&via=OpenVideoAnnotation&text=" +encodeURIComponent('I want to share the next Open Video Annotation: ');
+			},
+			'google':function(title,link,noteText){
+				return 'https://plus.google.com/share?url='+link;
+			},
+			'email': function(title,link,noteText){
+				return 'mailto:?subject='+title+'&body='+link;
+			}
+		},
+	};
 
-	function Share() {
+	function Share(element,options) {
+		this.options.shareIn = typeof options.shareIn!='undefined'?options.shareIn:this.options.shareIn;
+		this.buildHTMLShareButton = __bind(this.buildHTMLShareButton, this);
+		this.updateViewer = __bind(this.updateViewer, this);
 		_ref = Share.__super__.constructor.apply(this, arguments);
 		return _ref;
 	}
@@ -27,9 +49,9 @@ Annotator.Plugin.Share = (function(_super) {
 		this.field = this.annotator.editor.addField({
 			type: 'input', //options (textarea,input,select,checkbox)
 		});
-		
+
 		//Modify the element created with annotator to be an invisible span
-		var newfield = Annotator.$('<li class="annotator-item">'+this.buildHTML('Share without saving:')+'</li>');
+		var newfield = Annotator.$('<li class="annotator-item">'+this.buildHTMLShareButton('Share without saving:')+'</li>');
 		Annotator.$(this.field).replaceWith(newfield);
 		this.field=newfield[0];
 		
@@ -44,72 +66,107 @@ Annotator.Plugin.Share = (function(_super) {
 		//-- Viewer
 		var newview = this.annotator.viewer.addField({
 			load: this.updateViewer,
-      		buildHTML: this.buildHTML,
-      		buttonsActions: this.buttonsActions,
-      		createAPIURL: this.createAPIURL,
-      		annotator: this.annotator,
-      		getSource: this.getSource,
 		});
 
 		return this.input = $(this.field).find(':input');
 	};
 	
-	//template for the design of the Share Plugin
-	Share.prototype.buildHTML = function(title) {
-		var title = title || 'Share:';
+	//Share button HTML
+	Share.prototype.buildHTMLShareButton = function(title,id) {
+		var title = title || 'Share:',
+			id = typeof id!='undefined'?'annotationId="'+id+'"':'',
 			titleText = '<div class="share-text-annotator">'+title+'</div>',
-			facebook = '<div class="share-facebook-annotator share-button"></div>',
-			twitter = '<div class="share-twitter-annotator share-button"></div>',
-			google = '<div class="share-google-annotator share-button"></div>',
-			email = '<div class="share-email-annotator share-button"></div>',
-			buttons = facebook + twitter + google + email;
-		return '<div class="share-container-annotator">'+titleText+buttons+'</div>';
-			
+			shareButton = '<div class="share-button-annotator share-button" '+id+'></div>',
+			popup = '<div class="share-popup-overlay-bg" style="z-index:30000000000"><div class="share-popup"><div class="share-popup-items"></div><div class="close-btn">Close</div></div></div>';
+		return '<div class="share-container-annotator">'+titleText+shareButton+popup+'</div>';
+	}
+	
+	//template for the design of the Share Plugin
+	Share.prototype.buildHTMLPopup = function(title) {
+		var buttons = '';
+		if (typeof this.options.shareIn!='undefined'){
+			this.options.shareIn.forEach(function(item) { 
+				buttons += '<div class="share-'+item+'-annotator share-button">'+item.charAt(0).toUpperCase() + item.slice(1)+'</div>';
+			});
+		}
+		this.uri = typeof this.uri!='undefined'?this.uri:'';
+		var title = '<div class="share-popup-title">'+title.replace(":","")+'</div>',
+			copy = '<div class="share-popup-copy">Copy and Share:</div>',
+			uri = '<input type="text" class="share-popup-uri" onclick="javascript:this.select();" readonly="true" value="'+this.uri+'">',
+			popup = title + buttons + copy + uri;
+		return popup;
 	}
 	
 	//Create the actions for the buttons
 	Share.prototype.buttonsActions = function(field,method) {
 		var share = this;
-		$(field).find('.share-email-annotator').click(function() {
-			var url = share.createAPIURL(method),
-				subject = "Sharing a annotation with Open Video Annotation";
-				body = encodeURIComponent(url);
-			
-			window.open('mailto:?subject='+subject+'&body='+body);
+		
+		// hide popup when user clicks on close button
+		$(field).find('.close-btn').click(function() {
+			$('.share-popup-overlay-bg').hide();
 		});
-		$(field).find('.share-facebook-annotator').click(function() {
-			var url = share.createAPIURL(method),
-				fbURL = 'https://www.facebook.com/sharer/sharer.php?s=100&p[url]='+encodeURIComponent(url)+'&p[title]='+encodeURIComponent('Open Video Annotation')+'&p[summary]='+share.getSource('ovaText');
-			
-			window.open(fbURL);
+		// hides the popup if user clicks anywhere outside the container
+		$(field).find('.share-popup-overlay-bg').click(function() {
+			$('.share-popup-overlay-bg').hide();
 		});
-		$(field).find('.share-twitter-annotator').click(function() {
-			var url = share.createAPIURL(method),
-				twitterURL = 'https://twitter.com/intent/tweet?original_referer='+encodeURIComponent(url)+'&source=tweetbutton&url='+encodeURIComponent(url)+ "&via=OpenVideoAnnotation&text=" +encodeURIComponent('I want to share the next Open Video Annotation: ');
-			window.open(twitterURL);
+		// prevents the overlay from closing if user clicks inside the popup overlay
+		$(field).find('.share-popup').click(function() {
+			return false;
 		});
-		$(field).find('.share-google-annotator').click(function() {
-			var url = share.createAPIURL(method),
-				googleURL = 'https://plus.google.com/share?url='+encodeURIComponent(url);
-			window.open(googleURL);
+		// Share button
+		$(field).find('.share-button-annotator.share-button').click(function() {
+		    event.preventDefault(); // disable normal link function so that it doesn't refresh the page
+		    var _field = this,
+		    	ovaId = $(this).attr('annotationId'),
+		    	title = method == 1?'Share':'Share without saving';
+		    
+		    // share.uri will be useful for buildHTMLPopup functions
+		    share.uri = share.createAPIURL(method,ovaId); 
+		    
+		    //display your popup
+		    $(this).parent().find('.share-popup-overlay-bg').show(); 
+		    
+		    //build buttons
+		    $(this).parent().find('.share-popup-items').html(share.buildHTMLPopup(title)); 
+		    
+		    //buttons actions
+			if (typeof share.options.shareIn!='undefined'){
+				share.options.shareIn.forEach(function(item) {
+					$(_field).parent().find('.share-'+item+'-annotator.share-button').click(function() {
+						var url = share.createAPIURL(method,ovaId),
+							title = "Sharing a annotation with Open Video Annotation";
+							link = encodeURIComponent(url),
+							noteText = share.getSource('ovaText'),
+							finalUrl = '';
+						if (method==1){
+							var viewer = share.annotator.viewer,
+								textarea = $(viewer.element).find('div:first').html();
+							noteText = encodeURIComponent(textarea);
+						}
+						finalUrl = typeof share.options.getUrl[item]!='undefined'?share.options.getUrl[item](title,link,noteText):'';
+						if(typeof share.options.getUrl[item]!='undefined')
+							window.open(finalUrl);
+					}); 
+				});
+			}
 		});
 	};
 	
 	
-	Share.prototype.createAPIURL = function(method) {
+	Share.prototype.createAPIURL = function(method,ovaId) {
 		var annotator = this.annotator,
 			editor = annotator.editor,
 			method = method || 1,
 			//url = location.protocol + '//' + location.host + location.pathname,
 			url = window.location.href;
-			
+		
 		if(url.indexOf('?') >= 0)
 			url += '&';
 		else
 			url += '?';
 			
 		if (method === 1){
-			var ovaId = this.getSource('ovaId');
+			var ovaId = typeof ovaId!='undefined'?ovaId:'';
 			url += 'ovaId=' + ovaId;
 		}else if (method === 2){
 			var ovaStart = this.getSource('ovaStart'),
@@ -136,9 +193,6 @@ Annotator.Plugin.Share = (function(_super) {
 	Share.prototype.getSource = function(source) {
 		var	source = source || '';
 		if (source == 'ovaId') {//method 1
-			var annotator = this.annotator,
-				viewer = annotator.viewer,
-				textarea = $(viewer.element).find('textarea')[0];
 			source=this.annotation.id;
 		}else{//method 2
 			var annotator = this.annotator,
@@ -352,20 +406,22 @@ Annotator.Plugin.Share = (function(_super) {
 	Share.prototype.getParameterByName = function(name) {
 		name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
 		var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-		results = regex.exec(location.search);
+			//results = regex.exec(location.search),
+        	results = regex.exec('?'+window.location.href.split('?')[1]);
 		return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 	};
 
-
 	Share.prototype.updateViewer = function(field, annotation) {
-		//if (annotation.media && annotation.media == 'video') {
+		this.annotation = annotation;
+		
 		var self = this,
 			field = $(field),
 			ret = field.addClass('share-viewer-annotator').html(function() {
 				var string;
-				return self.buildHTML();
+				return self.buildHTMLShareButton('Share:',self.getSource('ovaId'));
 			});
-		this.annotation = annotation;
+			
+			
 		//Create the actions for the buttons
 		this.buttonsActions(field[0],1); //1 is the method of the API that will be for share some annotation in the database
 		return ret;
