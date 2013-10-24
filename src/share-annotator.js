@@ -27,7 +27,8 @@ Annotator.Plugin.Share = (function(_super) {
 	};
 
 	function Share(element,options) {
-		this.options.shareIn = typeof options.shareIn!='undefined'?options.shareIn:this.options.shareIn;
+		if (typeof options!='undefined')
+			this.options.shareIn = typeof options.shareIn!='undefined'?options.shareIn:this.options.shareIn;
 		this.buildHTMLShareButton = __bind(this.buildHTMLShareButton, this);
 		this.updateViewer = __bind(this.updateViewer, this);
 		_ref = Share.__super__.constructor.apply(this, arguments);
