@@ -461,7 +461,7 @@ Annotator.Plugin.Share = (function(_super) {
 				return self.buildHTMLShareButton('Share:',self.getSource('ovaId'));
 			});
 			
-			
+			console.log(field[0]);
 		//Create the actions for the buttons
 		this.buttonsActions(field[0],1); //1 is the method of the API that will be for share some annotation in the database
 		return ret;

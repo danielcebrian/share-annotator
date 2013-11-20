@@ -61,12 +61,12 @@
 }
 .share-container-annotator .share-popup-overlay-bg .share-popup{
 	background: #fff;
-	padding: 1%;
+	padding: 1% !important;
 	width: 30%;
 	position: relative;
 	top: 15%;
 	left: 50%;
-	margin: 0 0 0 -17%; /* add negative left margin for half the width to center the div */
+	margin: 0 0 0 -17% !important; /* add negative left margin for half the width to center the div */
 	cursor: default;
 	border-radius: 4px;
 	box-shadow: 0 0 5px rgba(0,0,0,0.9);
@@ -91,17 +91,9 @@
 	float: left;
 	width: 100%;
 	padding:0;
-	margin: 1.0em 0em 0.5em 0em;
+	margin: 1.0em 0em 0.5em 0em !important;
 }
 .share-container-annotator .share-popup-overlay-bg .share-popup .share-button{
-	width:49%;
-	padding: 1%;
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	-o-box-sizing: border-box;
-	box-sizing: border-box;
-	
-	
 	width: 50%;
 	padding: 0;
 	-webkit-box-sizing: border-box;
@@ -112,10 +104,9 @@
 	margin: 0;
 	text-align: center;
 	alignment-baseline: central;
-	padding-top: 1%;
 	background-position: 0.5em;
 	height: 4em;
-	padding-top: 1.3em;
+	padding-top: 1.3em !important;
 }
 /* Close button */
 .share-container-annotator .share-popup-overlay-bg .close-btn {
