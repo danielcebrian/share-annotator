@@ -24,6 +24,7 @@ Annotator.Plugin.Share = (function(_super) {
 				return 'mailto:?subject='+title+'&body='+link;
 			}
 		},
+		baseUrl:'', //baseUrl = the base url for all the shared annotations
 	};
 
 	function Share(element,options) {
@@ -57,7 +58,7 @@ Annotator.Plugin.Share = (function(_super) {
 		this.field=newfield[0];
 		
 		//Create the actions for the buttons
-		this.buttonsActions(this.field,2); //2 is the method of the API that will be for share without saving
+		this.buttonsActions(this.field,2,this.options.baseUrl); //2 is the method of the API that will be for share without saving
 		
 		//Init the API plugin
 		var APIoptions = this.initAPI();
@@ -99,7 +100,7 @@ Annotator.Plugin.Share = (function(_super) {
 	}
 	
 	//Create the actions for the buttons
-	Share.prototype.buttonsActions = function(field,method) {
+	Share.prototype.buttonsActions = function(field,method,url) {
 		var share = this;
 		
 		// hide popup when user clicks on close button
@@ -122,7 +123,7 @@ Annotator.Plugin.Share = (function(_super) {
 		    	title = method == 1?'Share':'Share without saving';
 		    
 		    // share.uri will be useful for buildHTMLPopup functions
-		    share.uri = share.createAPIURL(method,ovaId); 
+		    share.uri = share.createAPIURL(method,ovaId,url); 
 		    
 		    //display your popup
 		    $(this).parent().find('.share-popup-overlay-bg').show(); 
@@ -134,7 +135,7 @@ Annotator.Plugin.Share = (function(_super) {
 			if (typeof share.options.shareIn!='undefined'){
 				share.options.shareIn.forEach(function(item) {
 					$(_field).parent().find('.share-'+item+'-annotator.share-button').click(function() {
-						var url = share.createAPIURL(method,ovaId),
+						var url = share.createAPIURL(method,ovaId,url),
 							title = "Sharing a annotation with Open Video Annotation";
 							link = encodeURIComponent(url),
 							noteText = share.getSource('ovaText'),
@@ -154,12 +155,12 @@ Annotator.Plugin.Share = (function(_super) {
 	};
 	
 	
-	Share.prototype.createAPIURL = function(method,ovaId) {
+	Share.prototype.createAPIURL = function(method,ovaId,url) {
 		var annotator = this.annotator,
 			editor = annotator.editor,
 			method = method || 1,
 			//url = location.protocol + '//' + location.host + location.pathname,
-			url = window.location.href;
+			url = url || window.location.href;
 		
 		url += (url.indexOf('?') >= 0)?'&':'?';
 			
@@ -461,9 +462,9 @@ Annotator.Plugin.Share = (function(_super) {
 				return self.buildHTMLShareButton('Share:',self.getSource('ovaId'));
 			});
 			
-			console.log(field[0]);
+			
 		//Create the actions for the buttons
-		this.buttonsActions(field[0],1); //1 is the method of the API that will be for share some annotation in the database
+		this.buttonsActions(field[0],1,this.options.baseUrl); //1 is the method of the API that will be for share some annotation in the database
 		return ret;
 	};
 

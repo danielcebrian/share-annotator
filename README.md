@@ -53,6 +53,7 @@ It is possible to add new social networks and sort in the display using the opti
 
  - shareIn: This is an array with the social networks sorted (by default: ['facebook','twitter','email','google'])
  - getUrl: This is an important parameter, because with this you could add your own social network. In order to use this, you will need to create a function with three inlet parameters (title, link, noteText). 
+ - baseUrl: This is the base url for all the shared annotations (by default: the current webpage)
 
  * Title is the static text by default ("Sharing a annotation with Open Video Annotation")
  * Link is the url that you will share
