@@ -74,9 +74,9 @@ Annotator.Plugin.Share = (function(_super) {
 	
 	//Share button HTML
 	Share.prototype.buildHTMLShareButton = function(title,id) {
-		var title = title || 'Share:',
+		var title = title || '',
 			id = typeof id!='undefined'?'annotationId="'+id+'"':'',
-			titleText = '<div class="share-text-annotator">'+title+'</div>',
+			titleText = title!=''?'<div class="share-text-annotator">'+title+'</div>':'',
 			shareButton = '<div class="share-button-annotator share-button" '+id+'></div>',
 			popup = '<div class="share-popup-overlay-bg" style="z-index:30000000000"><div class="share-popup"><div class="share-popup-items"></div><div class="close-btn">Close</div></div></div>';
 		return '<div class="share-container-annotator">'+titleText+shareButton+popup+'</div>';
@@ -161,10 +161,7 @@ Annotator.Plugin.Share = (function(_super) {
 			//url = location.protocol + '//' + location.host + location.pathname,
 			url = window.location.href;
 		
-		if(url.indexOf('?') >= 0)
-			url += '&';
-		else
-			url += '?';
+		url += (url.indexOf('?') >= 0)?'&':'?';
 			
 		if (method === 1){
 			var ovaId = typeof ovaId!='undefined'?ovaId:'';
@@ -282,12 +279,14 @@ Annotator.Plugin.Share = (function(_super) {
 			.subscribe("annotationsLoaded", function (annotations){
 				console.log("runningAPI");
 				var wrapper = $('.annotator-wrapper').parent()[0],
-					mplayer;
+					mplayer,
+					osda;
 					
 				//Set Annotator in wrapper to fix quick DOM
 				$.data(wrapper, 'annotator', self.annotator);//Set the object in the span
 				annotator = window.annotator = $.data(wrapper, 'annotator');
 				mplayer = typeof annotator.mplayer!='undefined'?annotator.mplayer:[];
+				osda = typeof annotator.osda!='undefined'?annotator.osda:[];
 				
 				//Detect if the URL has an API element
 				if (typeof API!='undefined' && typeof API.method!='undefined' && (API.method=='1'||API.method=='2')) {
@@ -299,6 +298,20 @@ Annotator.Plugin.Share = (function(_super) {
 							var an = allannotations[item];
 							if (typeof an.id!='undefined' && an.id == ovaId){//this is the annotation
 								if(self._isVideo(an)){//It is a video
+									if (typeof mplayer[an.target.container]!='undefined'){
+										var player = mplayer[an.target.container];
+										if (player.id_ == an.target.container){
+											var anFound = an;
+											videojs(player.id_).ready(function(){
+												if (player.techName != 'Youtube'){
+													player.preload('auto');
+												}
+												player.autoPlayAPI = anFound;
+												player.play();
+											});
+										}
+									}
+								}else if(self._isVideo(an)){//It is a OpenSeaDragon Annotation
 									if (typeof mplayer[an.target.container]!='undefined'){
 										var player = mplayer[an.target.container];
 										if (player.id_ == an.target.container){
