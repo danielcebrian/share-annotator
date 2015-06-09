@@ -135,7 +135,7 @@ Annotator.Plugin.Share = (function(_super) {
 			return false;
 		});
 		// Share button
-		$(field).find('.share-button-annotator.share-button').click(function() {
+		$(field).find('.share-button-annotator.share-button').click(function(event) {
 		    event.preventDefault(); // disable normal link function so that it doesn't refresh the page
 		    var _field = this,
 		    	ovaId = $(this).attr('annotationId'),
